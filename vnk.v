@@ -33,3 +33,22 @@ mut:
 	a f32
 }
 //type NkColorF NkColorF0
+
+type NkRect C.nk_rect
+fn C.nk_rect(x f32, y f32, w f32, h f32) C.nk_rect
+fn C.nk_begin(ctx voidptr, title byteptr, bounds NkRect, flags int) int
+fn C.nk_layout_row_static(ctx voidptr, height f32, item_width int, cols int)
+fn C.nk_button_label(ctx voidptr, title byteptr) int
+fn C.nk_layout_row_dynamic(ctx voidptr, height f32, cols int)
+fn C.nk_option_label(ctx voidptr, title byteptr, active int) int
+fn C.nk_property_int(ctx voidptr, name byteptr, min int, val voidptr, max int, step int, inc_per_pixel f32)
+fn C.nk_label(ctx voidptr, title byteptr, align int)
+fn C.nk_end(ctx voidptr)
+fn C.nk_sdl_render(nk_anti_aliasing int, max_vertex_buffer int, max_element_buffer int)
+fn C.nk_sdl_init(win voidptr) voidptr
+fn C.nk_sdl_font_stash_begin(atlas voidptr)
+fn C.nk_sdl_font_stash_end()
+fn C.nk_input_begin(ctx voidptr)
+fn C.nk_sdl_handle_event(evt voidptr) int
+fn C.nk_input_end(ctx voidptr)
+fn C.nk_sdl_shutdown()

@@ -35,20 +35,20 @@ mut:
 fn (s mut AppState) live_main() {
 //	mut
 	bg := vnk.NkColorF{0.10, 0.18, 0.24, 1.0}
-        if (C.nk_begin(s.ctx, "Hello, Vorld!", C.nk_rect(50, 50, 230, 250),
+        if (1 == C.nk_begin(s.ctx, "Hello, Vorld!", C.nk_rect(50, 50, 230, 250),
             C.NK_WINDOW_BORDER|C.NK_WINDOW_MOVABLE|C.NK_WINDOW_SCALABLE|
             C.NK_WINDOW_MINIMIZABLE|C.NK_WINDOW_TITLE)) {
 
             C.nk_layout_row_static(s.ctx, 30, 80, 1)
 
-            if C.nk_button_label(s.ctx, "button") {
+            if 1 == C.nk_button_label(s.ctx, "button") {
                 println('button pressed!')
             }
             C.nk_layout_row_dynamic(s.ctx, 30, 2)
-            if C.nk_option_label(s.ctx, "easy", s.op == .easy) {
+            if 1 == C.nk_option_label(s.ctx, "easy", s.op == .easy) {
                 s.op = .easy
             }
-            if C.nk_option_label(s.ctx, "hard", s.op == .hard) {
+            if 1 == C.nk_option_label(s.ctx, "hard", s.op == .hard) {
                 s.op = .hard
             }
             C.nk_layout_row_dynamic(s.ctx, 22, 1)
