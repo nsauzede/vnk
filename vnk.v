@@ -25,8 +25,7 @@ module vnk
 #flag windows -lopengl32 -lglew32
 
 pub struct NkColorF {
-pub:
-mut:
+pub mut:
 	r f32
 	g f32
 	b f32
