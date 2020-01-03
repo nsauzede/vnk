@@ -81,7 +81,7 @@ fn (s mut AppState) live_main() {
 
 fn main() {
 	mut s := AppState{}
-	s.build = time.now().uni
+	s.build = time.now().unix
 	println('build $s.build')
 
     C.SDL_SetHint(C.SDL_HINT_VIDEO_HIGHDPI_DISABLED, "0")
