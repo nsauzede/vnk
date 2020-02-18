@@ -22,7 +22,6 @@ nuklear_sdl_gl3.h: $(NUKLEAR)/nuklear.h
 	$(CP) $(NUKLEAR)/demo/sdl_opengl3/nuklear_sdl_gl3.h $@
 
 $(NUKLEAR)/nuklear.h:
-#	[ -d nuklear ] || git clone https://github.com/vurtun/nuklear.git
 	[ -d nuklear ] || git clone https://github.com/Immediate-Mode-UI/Nuklear nuklear
 
 clean:
