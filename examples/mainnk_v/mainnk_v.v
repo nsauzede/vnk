@@ -4,7 +4,7 @@
 // Use of this source code is governed by an MIT license
 // that can be found in the LICENSE file.
 module main
-import nsauzede.vsdl2
+import sdl
 import nsauzede.vnk
 import os
 import time
@@ -127,10 +127,10 @@ fn main() {
 //    /*mut*/ bg = NkColorF{0.10, 0.18, 0.24, 1.0}
     mut running := true
     for running {
-        evt := vsdl2.Event{}
+        evt := SDL_Event{}
         C.nk_input_begin(s.ctx)
         for C.SDL_PollEvent(&evt) > 0 {
-            if int(evt._type) == C.SDL_QUIT {
+            if int(evt.@type) == C.SDL_QUIT {
                 running = false
                 goto cleanup
             }
