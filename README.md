@@ -1,7 +1,8 @@
 # vnk
-V Nuklear module -- nuklear wrapper
+V Nuklear module -- a nuklear wrapper in V language
 
 If you are new to nuklear see [here](https://github.com/Immediate-Mode-UI/Nuklear)
+If you are new to V language see [here](https://vlang.io/)
 
 Current APIs available/tested in examples :
 - create SDL2 / OpenGL window
