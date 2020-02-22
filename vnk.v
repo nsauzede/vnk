@@ -19,21 +19,40 @@ module vnk
 #include <GL/glew.h>
 #include "nuklear.h"
 #include "nuklear_sdl_gl3.h"
+#include "vnk.h"
 
 #flag linux -lGL -lGLEW
 
 #flag windows -lopengl32 -lglew32
 
-pub struct NkColorF {
+pub struct C.nk_colorf {
 pub mut:
 	r f32
 	g f32
 	b f32
 	a f32
 }
-//type NkColorF NkColorF0
+//pub type nk_colorf C.nk_colorf
+pub struct C.nk_color {
+pub mut:
+	r byte
+	g byte
+	b byte
+	a byte
+}
+pub struct C.nk_vec2 {
+pub mut:
+	x f32
+	y f32
+}
 
 type NkRect C.nk_rect
+fn C.nk_rgb_cf(c C.nk_colorf) C.nk_color
+fn C.nk_widget_width(ctx voidptr) f32
+fn C.nk_combo_begin_color(ctx voidptr, color C.nk_color, size C.nk_vec2) int
+fn C.nk_color_picker(ctx voidptr, colorf C.nk_colorf, cfmt int) C.nk_colorf
+fn C.nk_propertyf(ctx voidptr, name byteptr, min f32, val f32, max f32, step f32, inc_per_pixel f32) f32
+fn C.nk_combo_end(ctx voidptr)
 fn C.nk_rect(x f32, y f32, w f32, h f32) C.nk_rect
 fn C.nk_begin(ctx voidptr, title byteptr, bounds NkRect, flags int) int
 fn C.nk_layout_row_static(ctx voidptr, height f32, item_width int, cols int)
