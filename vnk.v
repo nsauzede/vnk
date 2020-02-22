@@ -6,6 +6,7 @@
 module vnk
 
 #flag -Insauzede/vnk
+#flag -I.
 #flag -DNK_INCLUDE_FIXED_TYPES
 #flag -DNK_INCLUDE_STANDARD_IO
 #flag -DNK_INCLUDE_STANDARD_VARARGS
@@ -70,3 +71,7 @@ fn C.nk_input_begin(ctx voidptr)
 fn C.nk_sdl_handle_event(evt voidptr) int
 fn C.nk_input_end(ctx voidptr)
 fn C.nk_sdl_shutdown()
+
+pub const (
+  version = '0.1' // hack to avoid unused module warning in the main program
+)

@@ -34,6 +34,14 @@ mut:
 	property int
 }
 
+// these kludges are workaround for "the following imports were never used"
+// until these annoyances are fixed
+const (
+  vnk_version = vnk.version
+  sdl_version = sdl.version
+  os_maxpath = os.MAX_PATH
+)
+
 [live]
 fn (s mut AppState) live_main() {
 	if (1 == C.nk_begin(s.ctx, "Hello, Vorld!", C.nk_rect(50, 50, 230, 250),
@@ -42,8 +50,9 @@ fn (s mut AppState) live_main() {
 
 		C.nk_layout_row_static(s.ctx, 30, 80, 1)
 
-		if 1 == C.nk_button_label(s.ctx, "button") {
-			println('button pressed!')
+		if 1 == C.nk_button_label(s.ctx, "Click Me!") {
+			mode := if s.op == .easy {"Easy"} else {"Hard"}
+			println('button pressed! mode=$mode compr=$s.property')
 		}
 		C.nk_layout_row_dynamic(s.ctx, 30, 2)
 		if 1 == C.nk_option_label(s.ctx, "easy", s.op == .easy) {
@@ -55,9 +64,6 @@ fn (s mut AppState) live_main() {
 		C.nk_layout_row_dynamic(s.ctx, 22, 1)
 		C.nk_property_int(s.ctx, "Compression:", 0, &s.property, 100, 10, 1)
 
-		C.nk_layout_row_dynamic(s.ctx, 20, 1)
-		C.nk_label(s.ctx, "background:", C.NK_TEXT_LEFT)
-		C.nk_layout_row_dynamic(s.ctx, 25, 1)
 		t := time.now().unix
 		s.frames++
 		fps := 'Application average $s.fps FPS'
@@ -67,6 +73,10 @@ fn (s mut AppState) live_main() {
 		}
 		s.last_time = t
 		C.nk_label(s.ctx, fps.str, C.NK_TEXT_LEFT)
+
+		C.nk_layout_row_dynamic(s.ctx, 20, 1)
+		C.nk_label(s.ctx, "background:", C.NK_TEXT_LEFT)
+		C.nk_layout_row_dynamic(s.ctx, 25, 1)
 		size := C.nk_vec2{C.nk_widget_width(s.ctx),400}
 		if 1 == C.nk_combo_begin_color(s.ctx, C.nk_rgb_cf(s.bg), size) {
 			C.nk_layout_row_dynamic(s.ctx, 120, 1)
@@ -89,7 +99,7 @@ fn (s mut AppState) live_main() {
 }
 
 fn main() {
-	mut s := AppState{}
+	mut s := AppState{win:0 ctx:0}
 	s.last_time = time.now().unix
 
 	C.SDL_SetHint(C.SDL_HINT_VIDEO_HIGHDPI_DISABLED, "0")
