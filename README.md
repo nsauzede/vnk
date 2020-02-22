@@ -5,6 +5,8 @@ If you are new to nuklear see [here](https://github.com/Immediate-Mode-UI/Nuklea
 
 If you are new to V language see [here](https://vlang.io/)
 
+<img src='https://github.com/nsauzede/vnk/blob/master/vnk.png'>
+
 Current APIs available/tested in examples :
 - create SDL2 / OpenGL window
 - set clear color
