@@ -4,7 +4,7 @@
 // Use of this source code is governed by an MIT license
 // that can be found in the LICENSE file.
 module main
-import sdl
+import nsauzede.vsdl2 as sdl
 import nsauzede.vnk
 import os
 import time
@@ -22,6 +22,8 @@ enum Op {
 
 struct AppState {
 mut:
+	hide_window bool
+	nkw_rect C.nk_rect = C.nk_rect{50, 50, 230, 250}
 	bg C.nk_colorf
 	last_time int
 	frames int
@@ -44,9 +46,15 @@ const (
 
 [live]
 fn (s mut AppState) live_main() {
-	if (1 == C.nk_begin(s.ctx, "Hello, Vorld!", C.nk_rect(50, 50, 230, 250),
-		C.NK_WINDOW_BORDER|C.NK_WINDOW_MOVABLE|C.NK_WINDOW_SCALABLE|
-		C.NK_WINDOW_MINIMIZABLE|C.NK_WINDOW_TITLE)) {
+	if !s.hide_window {
+	if 1 == C.nk_begin(s.ctx, "Hello, Vorld! VVVV", s.nkw_rect, 0
+//		| C.NK_WINDOW_BORDER
+		| C.NK_WINDOW_MOVABLE
+		| C.NK_WINDOW_SCALABLE
+		| C.NK_WINDOW_MINIMIZABLE
+		| C.NK_WINDOW_TITLE
+		) {
+		s.nkw_rect = C.nk_window_get_bounds(s.ctx)
 
 		C.nk_layout_row_static(s.ctx, 30, 80, 1)
 
@@ -90,6 +98,7 @@ fn (s mut AppState) live_main() {
 		}
 	}
 	C.nk_end(s.ctx)
+	}
 	C.SDL_GetWindowSize(s.win, &s.win_width, &s.win_height)
 	C.glViewport(0, 0, s.win_width, s.win_height)
 	C.glClear(C.GL_COLOR_BUFFER_BIT)
@@ -145,12 +154,17 @@ fn main() {
 	s.bg = bg
 	mut running := true
 	for running {
-		evt := SDL_Event{}
+		evt := sdl.Event{}
 		C.nk_input_begin(s.ctx)
 		for C.SDL_PollEvent(&evt) > 0 {
 			if int(evt.@type) == C.SDL_QUIT {
 				running = false
 				goto cleanup
+			}
+			if evt.@type == C.SDL_KEYDOWN {
+				if evt.key.keysym.sym == C.SDLK_l {
+					s.hide_window = !s.hide_window
+				}
 			}
 			C.nk_sdl_handle_event(&evt)
 		}

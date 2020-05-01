@@ -5,8 +5,7 @@
 // The vnk module uses the nice Nuklear library (see README.md)
 module vnk
 
-#flag -Insauzede/vnk
-#flag -I.
+#flag -I@VROOT
 #flag -DNK_INCLUDE_FIXED_TYPES
 #flag -DNK_INCLUDE_STANDARD_IO
 #flag -DNK_INCLUDE_STANDARD_VARARGS
@@ -47,7 +46,12 @@ pub mut:
 	y f32
 }
 
-type NkRect C.nk_rect
+pub struct C.nk_rect {
+	x f32
+	y f32
+	w f32
+	h f32
+}
 fn C.nk_rgb_cf(c C.nk_colorf) C.nk_color
 fn C.nk_widget_width(ctx voidptr) f32
 fn C.nk_combo_begin_color(ctx voidptr, color C.nk_color, size C.nk_vec2) int
@@ -71,6 +75,11 @@ fn C.nk_input_begin(ctx voidptr)
 fn C.nk_sdl_handle_event(evt voidptr) int
 fn C.nk_input_end(ctx voidptr)
 fn C.nk_sdl_shutdown()
+fn C.glViewport()
+fn C.glClear()
+fn C.glClearColor()
+fn C.glewInit() int
+fn C.nk_window_get_bounds() C.nk_rect
 
 pub const (
   version = '0.1' // hack to avoid unused module warning in the main program
