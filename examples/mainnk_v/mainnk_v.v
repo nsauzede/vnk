@@ -41,7 +41,7 @@ mut:
 const (
   vnk_version = vnk.version
   sdl_version = sdl.version
-  os_maxpath = os.MAX_PATH
+  os_maxpath = os.max_path_len
 )
 
 [live]
@@ -79,7 +79,7 @@ fn (s mut AppState) live_main() {
 			s.fps = s.frames
 			s.frames = 0
 		}
-		s.last_time = t
+		s.last_time = int(t)
 		C.nk_label(s.ctx, fps.str, C.NK_TEXT_LEFT)
 
 		C.nk_layout_row_dynamic(s.ctx, 20, 1)
@@ -109,7 +109,7 @@ fn (s mut AppState) live_main() {
 
 fn main() {
 	mut s := AppState{win:0 ctx:0}
-	s.last_time = time.now().unix
+	s.last_time = int(time.now().unix)
 
 	C.SDL_SetHint(C.SDL_HINT_VIDEO_HIGHDPI_DISABLED, "0")
 	C.SDL_Init(C.SDL_INIT_VIDEO|C.SDL_INIT_TIMER|C.SDL_INIT_EVENTS)
