@@ -10,10 +10,10 @@ import os
 import time
 
 const (
-	WINDOW_WIDTH = 400
-	WINDOW_HEIGHT = 400
-	MAX_VERTEX_MEMORY = 512 * 1024
-	MAX_ELEMENT_MEMORY = 128 * 1024
+	window_width = 400
+	window_height = 400
+	max_vertex_memory = 512 * 1024
+	max_element_memory = 128 * 1024
 )
 
 enum Op {
@@ -45,7 +45,7 @@ const (
 )
 
 [live]
-fn (s mut AppState) live_main() {
+fn (mut s AppState) live_main() {
 	if !s.hide_window {
 	if 1 == C.nk_begin(s.ctx, "Hello, Vorld! VVVV", s.nkw_rect, 0
 //		| C.NK_WINDOW_BORDER
@@ -60,7 +60,10 @@ fn (s mut AppState) live_main() {
 
 		if 1 == C.nk_button_label(s.ctx, "Click Me!") {
 			mode := if s.op == .easy {"Easy"} else {"Hard"}
-			println('button pressed! mode=$mode compr=$s.property')
+			r := s.bg.r * 255
+			g := s.bg.g * 255
+			b := s.bg.b * 255
+			println('button pressed! mode=$mode compr=$s.property r=$r g=$g b=$b')
 		}
 		C.nk_layout_row_dynamic(s.ctx, 30, 2)
 		if 1 == C.nk_option_label(s.ctx, "easy", s.op == .easy) {
@@ -103,7 +106,7 @@ fn (s mut AppState) live_main() {
 	C.glViewport(0, 0, s.win_width, s.win_height)
 	C.glClear(C.GL_COLOR_BUFFER_BIT)
 	C.glClearColor(s.bg.r, s.bg.g, s.bg.b, s.bg.a)
-	C.nk_sdl_render(C.NK_ANTI_ALIASING_ON, MAX_VERTEX_MEMORY, MAX_ELEMENT_MEMORY)
+	C.nk_sdl_render(C.NK_ANTI_ALIASING_ON, max_vertex_memory, max_element_memory)
 	C.SDL_GL_SwapWindow(s.win)
 }
 
@@ -115,7 +118,7 @@ fn main() {
 	C.SDL_Init(C.SDL_INIT_VIDEO|C.SDL_INIT_TIMER|C.SDL_INIT_EVENTS)
 	s.win = C.SDL_CreateWindow("Live! V Nuklear+SDL2+OpenGL3 demo",
 	C.SDL_WINDOWPOS_CENTERED, C.SDL_WINDOWPOS_CENTERED,
-	WINDOW_WIDTH, WINDOW_HEIGHT, C.SDL_WINDOW_OPENGL|C.SDL_WINDOW_SHOWN|C.SDL_WINDOW_ALLOW_HIGHDPI)
+	window_width, window_height, C.SDL_WINDOW_OPENGL|C.SDL_WINDOW_SHOWN|C.SDL_WINDOW_ALLOW_HIGHDPI)
 	gl_context := C.SDL_GL_CreateContext(s.win)
 	C.SDL_GL_SetAttribute (C.SDL_GL_CONTEXT_FLAGS, C.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG)
 	C.SDL_GL_SetAttribute (C.SDL_GL_CONTEXT_PROFILE_MASK, C.SDL_GL_CONTEXT_PROFILE_CORE)
@@ -125,7 +128,7 @@ fn main() {
 	s.win_width = 0
 	s.win_height = 0
 	C.SDL_GetWindowSize(s.win, &s.win_width, &s.win_height)
-	C.glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT)
+	C.glViewport(0, 0, window_width, window_height)
 	if C.glewInit() != C.GLEW_OK {
 		println('Failed to setup GLEW')
 		exit(1)
