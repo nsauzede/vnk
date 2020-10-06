@@ -60,7 +60,10 @@ fn (mut s AppState) live_main() {
 
 		if 1 == C.nk_button_label(s.ctx, "Click Me!") {
 			mode := if s.op == .easy {"Easy"} else {"Hard"}
-			println('button pressed! mode=$mode compr=$s.property')
+			r := s.bg.r * 255
+			g := s.bg.g * 255
+			b := s.bg.b * 255
+			println('button pressed! mode=$mode compr=$s.property r=$r g=$g b=$b')
 		}
 		C.nk_layout_row_dynamic(s.ctx, 30, 2)
 		if 1 == C.nk_option_label(s.ctx, "easy", s.op == .easy) {
