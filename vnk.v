@@ -66,6 +66,7 @@ fn C.nk_layout_row_dynamic(ctx voidptr, height f32, cols int)
 fn C.nk_option_label(ctx voidptr, title byteptr, active int) int
 fn C.nk_property_int(ctx voidptr, name byteptr, min int, val voidptr, max int, step int, inc_per_pixel f32)
 fn C.nk_label(ctx voidptr, title byteptr, align int)
+fn C.nk_text(ctx voidptr, title byteptr, flags int)
 fn C.nk_end(ctx voidptr)
 fn C.nk_sdl_render(nk_anti_aliasing int, max_vertex_buffer int, max_element_buffer int)
 fn C.nk_sdl_init(win voidptr) voidptr
@@ -82,6 +83,7 @@ fn C.glewInit() int
 fn C.nk_window_get_bounds() C.nk_rect
 fn C.nk_popup_begin(nk_context voidptr, nk_popup_type int, charp charptr, nk_flags int, bounds C.nk_rect) bool
 fn C.nk_popup_end(nk_context voidptr)
+fn C.nk_font_atlas_add_from_file(atlas voidptr, file_path charptr, height f32, config voidptr) voidptr
 
 pub const (
   version = '0.1' // hack to avoid unused module warning in the main program
