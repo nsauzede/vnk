@@ -80,6 +80,8 @@ fn C.glClear()
 fn C.glClearColor()
 fn C.glewInit() int
 fn C.nk_window_get_bounds() C.nk_rect
+fn C.nk_popup_begin(nk_context voidptr, nk_popup_type int, charp charptr, nk_flags int, bounds C.nk_rect) bool
+fn C.nk_popup_end(nk_context voidptr)
 
 pub const (
   version = '0.1' // hack to avoid unused module warning in the main program
