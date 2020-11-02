@@ -52,6 +52,25 @@ pub struct C.nk_rect {
 	w f32
 	h f32
 }
+pub struct C.nk_image{
+pub:
+handle voidptr
+w u16
+h u16
+region [4]u16
+}
+
+fn C.glGenTextures(n u32, textures u32)
+fn C.glBindTexture(target int, texture u32)
+fn C.glTexParameterf(target int, pname int, param f32)
+fn C.glGenerateMipmap(target int)
+
+fn C.nk_subimage_id(id int, w u16, h u16, sub_region C.nk_rect) C.nk_image
+fn C.nk_window_get_canvas(ctx voidptr) voidptr
+fn C.nk_draw_image(ptr voidptr, rect C.nk_rect, img voidptr, col C.nk_color)
+fn C.nk_image_color(ctx voidptr, img C.nk_image, col C.nk_color)
+fn C.nk_button_image_label(ctx voidptr, img C.nk_image, label charptr, text_alignment int) bool
+fn C.nk_image_id(tex int) C.nk_image
 fn C.nk_rgb_cf(c C.nk_colorf) C.nk_color
 fn C.nk_widget_width(ctx voidptr) f32
 fn C.nk_combo_begin_color(ctx voidptr, color C.nk_color, size C.nk_vec2) int

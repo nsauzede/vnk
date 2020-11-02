@@ -7,9 +7,19 @@ module main
 
 import nsauzede.vsdl2 as sdl
 import nsauzede.vnk
-import stbi
 import os
 import time
+
+const (
+	zoom               = 1
+	font_height        = 10
+	window_width       = 400
+	window_height      = 400
+	debug_width        = window_width
+	debug_height       = 160
+	max_vertex_memory  = 512 * 1024
+	max_element_memory = 128 * 1024
+)
 
 // these kludges are workaround for "the following imports were never used"
 // until these annoyances are fixed
@@ -19,33 +29,20 @@ const (
 	os_maxpath  = os.max_path_len
 )
 
-type UnusedStbi = stbi.Image
-
 const (
-	zoom               = 3
-	font_height        = 10
-	spr_width          = 16
-	spr_height         = 12
-	window_width       = 400
-	window_height      = 400
-	debug_width        = 200
-	debug_height       = 100
-	max_vertex_memory  = 512 * 1024
-	max_element_memory = 128 * 1024
-	c_empty            = ` `
-	c_store            = `.`
-	c_stored           = `*`
-	c_crate            = `$`
-	c_player           = `@`
-	c_splayer          = `+`
-	c_wall             = `#`
+	c_empty   = ` `
+	c_store   = `.`
+	c_stored  = `*`
+	c_crate   = `$`
+	c_player  = `@`
+	c_splayer = `+`
+	c_wall    = `#`
 )
 
 struct State {
 mut:
-	hide_window bool = true
-	nkw_rect    C.nk_rect = C.nk_rect{(window_width - debug_width) / 2, (window_height - debug_height) /
-	2, debug_width, debug_height}
+	hide_window bool
+	nkw_rect    C.nk_rect = C.nk_rect{0, window_height - debug_height, debug_width, debug_height}
 	bg          C.nk_colorf
 	last_time   int
 	frames      int
@@ -54,17 +51,6 @@ mut:
 	ctx         voidptr
 	win_width   int
 	win_height  int
-	// Images
-	pw          int = spr_width * zoom
-	ph          int = spr_height * zoom
-	i_atlas     int
-	i_empty     C.nk_image
-	i_store     C.nk_image
-	i_stored    C.nk_image
-	i_crate     C.nk_image
-	i_player    C.nk_image
-	i_splayer   C.nk_image
-	i_wall      C.nk_image
 	// Game state
 	w           int
 	h           int
@@ -79,56 +65,41 @@ mut:
 fn (mut s State) live_main() {
 	mut stored := 0
 	mut crates := 0
-	rec := C.nk_rect{0, 0, window_width, window_height - font_height * 2}
-	if 1 == C.nk_begin(s.ctx, 'Hello world', rec, C.NK_WINDOW_BACKGROUND | C.NK_WINDOW_NO_SCROLLBAR) {
-		grid_color := C.nk_color{255, 255, 255, 255}
-		canvas := C.nk_window_get_canvas(s.ctx)
+	rec := C.nk_rect{0, 0, window_width, window_height}
+	if 1 == C.nk_begin(s.ctx, 'Hello world', rec, C.NK_WINDOW_BACKGROUND) {
+		C.nk_layout_row_dynamic(s.ctx, font_height * zoom, 1)
 		s.h = 0
 		for j, ar in s.map {
 			s.w = 0
 			for i, ch in ar {
-				mut img := voidptr(0)
 				match ch {
 					c_player {
 						s.px = i
 						s.py = j
-						img = &s.i_player
 					}
 					c_splayer {
 						s.px = i
 						s.py = j
-						img = &s.i_splayer
 					}
 					c_crate {
 						crates++
-						img = &s.i_crate
-					}
-					c_store {
-						img = &s.i_store
 					}
 					c_stored {
 						stored++
 						crates++
-						img = &s.i_stored
 					}
-					c_wall {
-						img = &s.i_wall
-					}
-					else {
-						img = &s.i_empty
-					}
+					else {}
 				}
-				rect := C.nk_rect{i * s.pw, j * s.ph, s.pw, s.ph}
-				C.nk_draw_image(canvas, rect, img, grid_color)
 				s.w++
 			}
 			s.h++
+			// we must convert ar : array of rune to array of byte for nk_label
+			mut ab := []byte{}
+			for b in ar {
+				ab << b
+			}
+			C.nk_label(s.ctx, ab.data, C.NK_TEXT_LEFT)
 		}
-	}
-	C.nk_end(s.ctx)
-	rec2 := C.nk_rect{0, window_height - font_height * 2, window_width, font_height * 2}
-	if 1 == C.nk_begin(s.ctx, 'Status bar', rec2, C.NK_WINDOW_BACKGROUND | C.NK_WINDOW_NO_SCROLLBAR) {
-		C.nk_layout_row_dynamic(s.ctx, font_height, 1)
 		mut status := ''
 		if stored == crates {
 			status = 'YOU WIN!'
@@ -140,7 +111,7 @@ fn (mut s State) live_main() {
 		if 1 == C.nk_begin(s.ctx, 'Debug [l]', s.nkw_rect, 0 | C.NK_WINDOW_BORDER | C.NK_WINDOW_MOVABLE |
 			C.NK_WINDOW_SCALABLE | C.NK_WINDOW_MINIMIZABLE | C.NK_WINDOW_TITLE) {
 			s.nkw_rect = C.nk_window_get_bounds(s.ctx)
-			C.nk_layout_row_dynamic(s.ctx, font_height, 1)
+			C.nk_layout_row_dynamic(s.ctx, font_height * zoom, 1)
 			C.nk_label(s.ctx, '$s.fps FPS'.str, C.NK_TEXT_LEFT)
 			C.nk_label(s.ctx, 'w=$s.w h=$s.h'.str, C.NK_TEXT_LEFT)
 			C.nk_label(s.ctx, 'px=$s.px py=$s.py'.str, C.NK_TEXT_LEFT)
@@ -212,28 +183,6 @@ fn (mut s State) try_move(dx int, dy int) bool {
 	return do_it
 }
 
-fn image_load(filename string) int {
-	x := int(0)
-	y := int(0)
-	n := int(0)
-	tex := u32(0)
-	data := C.stbi_load(filename.str, &x, &y, &n, 0)
-	if isnil(data) {
-		panic('[SDL]: failed to load image: $filename')
-	}
-	C.glGenTextures(1, &tex)
-	C.glBindTexture(C.GL_TEXTURE_2D, tex)
-	C.glTexParameterf(C.GL_TEXTURE_2D, C.GL_TEXTURE_MIN_FILTER, C.GL_LINEAR_MIPMAP_NEAREST)
-	C.glTexParameterf(C.GL_TEXTURE_2D, C.GL_TEXTURE_MAG_FILTER, C.GL_LINEAR_MIPMAP_NEAREST)
-	C.glTexParameterf(C.GL_TEXTURE_2D, C.GL_TEXTURE_WRAP_S, C.GL_CLAMP_TO_EDGE)
-	C.glTexParameterf(C.GL_TEXTURE_2D, C.GL_TEXTURE_WRAP_T, C.GL_CLAMP_TO_EDGE)
-	C.glTexImage2D(C.GL_TEXTURE_2D, 0, C.GL_RGBA8, x, y, 0, C.GL_RGBA, C.GL_UNSIGNED_BYTE,
-		data)
-	C.glGenerateMipmap(C.GL_TEXTURE_2D)
-	C.stbi_image_free(data)
-	return int(tex)
-}
-
 fn main() {
 	mut s := State{
 		win: 0
@@ -266,22 +215,35 @@ fn main() {
 		println('Failed to setup GLEW')
 		exit(1)
 	}
-	s.ctx = C.nk_sdl_init(s.win)
+	s.ctx = C.nk_sdl_init(s.win) // Load Fonts: if none of these are loaded a default font will be used // Load Cursor: if you uncomment cursor loading please hide the cursor
 	{
+		// struct nk_font_atlas *atlas
 		atlas := voidptr(0)
 		C.nk_sdl_font_stash_begin(&atlas)
+		/*
+		struct nk_font *droid = nk_font_atlas_add_from_file(atlas, "../../../extra_font/DroidSans.ttf", 14, 0);
+		struct nk_font *roboto = nk_font_atlas_add_from_file(atlas, "../../../extra_font/Roboto-Regular.ttf", 16, 0);
+		struct nk_font *future = nk_font_atlas_add_from_file(atlas, "../../../extra_font/kenvector_future_thin.ttf", 13, 0); // struct nk_font *clean = nk_font_atlas_add_from_file(atlas, "../../../extra_font/ProggyClean.ttf", 12, 0); // struct nk_font *tiny = nk_font_atlas_add_from_file(atlas, "../../../extra_font/ProggyTiny.ttf", 10, 0); // struct nk_font *cousine = nk_font_atlas_add_from_file(atlas, "../../../extra_font/Cousine-Regular.ttf", 13, 0);
+		*/
+		// C.nk_font_atlas_add_from_file(atlas, 'RobotoMono-Regular.ttf', 16, 0)
 		C.nk_sdl_font_stash_end() // nk_style_load_all_cursors(ctx, atlas->cursors); // nk_style_set_font(ctx, &roboto->handle);
+		/*
+		C.nk_font_atlas_init_default(&atlas)
+		C.nk_font_atlas_begin(&atlas)
+		font := C.nk_font_atlas_add_from_file(&atlas, "RobotoMono-Regular.ttf", 13, 0)
+		mut img_width := 0
+		mut img_height := 0
+		image := C.nk_font_atlas_bake(&atlas, &img_width, &img_height, C.NK_FONT_ATLAS_RGBA32)
+		//device_upload_atlas(&device, image, img_width, img_height)
+		glGenTextures(1, &dev->font_tex);
+		C.nk_font_atlas_end(&atlas, C.nk_handle_id(device.font_tex), 0)
+		C.nk_init_default(&ctx, &font->handle)
+		*/
+		// maybe use :
+		// nk_font_atlas_add_default(atlas, 13.0f * 2, 0)
 	}
 	bg := C.nk_colorf{0.10, 0.18, 0.24, 1.0}
 	s.bg = bg
-	s.i_atlas = image_load('res/images/atlas.png')
-	s.i_empty = C.nk_subimage_id(s.i_atlas, 512, 512, C.nk_rect{0 * spr_width, 0 * spr_height, spr_width, spr_height})
-	s.i_store = C.nk_subimage_id(s.i_atlas, 512, 512, C.nk_rect{1 * spr_width, 0 * spr_height, spr_width, spr_height})
-	s.i_stored = C.nk_subimage_id(s.i_atlas, 512, 512, C.nk_rect{2 * spr_width, 0 * spr_height, spr_width, spr_height})
-	s.i_crate = C.nk_subimage_id(s.i_atlas, 512, 512, C.nk_rect{3 * spr_width, 0 * spr_height, spr_width, spr_height})
-	s.i_player = C.nk_subimage_id(s.i_atlas, 512, 512, C.nk_rect{4 * spr_width, 0 * spr_height, spr_width, spr_height})
-	s.i_splayer = C.nk_subimage_id(s.i_atlas, 512, 512, C.nk_rect{5 * spr_width, 0 * spr_height, spr_width, spr_height})
-	s.i_wall = C.nk_subimage_id(s.i_atlas, 512, 512, C.nk_rect{6 * spr_width, 0 * spr_height, spr_width, spr_height})
 	mut running := true
 	for running {
 		evt := sdl.Event{}
@@ -296,7 +258,7 @@ fn main() {
 					running = false
 					goto cleanup
 				}
-				if evt.key.keysym.sym == C.SDLK_d {
+				if evt.key.keysym.sym == C.SDLK_l {
 					s.hide_window = !s.hide_window
 				}
 				if evt.key.keysym.sym == C.SDLK_UP {
