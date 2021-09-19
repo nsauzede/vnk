@@ -115,9 +115,9 @@ fn main() {
 	}
 	s.last_time = int(time.now().unix)
 
-	C.SDL_SetHint(C.SDL_HINT_VIDEO_HIGHDPI_DISABLED, '0')
+	C.SDL_SetHint(C.SDL_HINT_VIDEO_HIGHDPI_DISABLED, c'0')
 	C.SDL_Init(C.SDL_INIT_VIDEO | C.SDL_INIT_TIMER | C.SDL_INIT_EVENTS)
-	s.win = C.SDL_CreateWindow('Live! V Nuklear+SDL2+OpenGL3 demo', C.SDL_WINDOWPOS_CENTERED,
+	s.win = C.SDL_CreateWindow(c'Live! V Nuklear+SDL2+OpenGL3 demo', C.SDL_WINDOWPOS_CENTERED,
 		C.SDL_WINDOWPOS_CENTERED, window_width, window_height, C.SDL_WINDOW_OPENGL | C.SDL_WINDOW_SHOWN | C.SDL_WINDOW_ALLOW_HIGHDPI)
 	gl_context := C.SDL_GL_CreateContext(s.win)
 	C.SDL_GL_SetAttribute(C.SDL_GL_CONTEXT_FLAGS, C.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG)
