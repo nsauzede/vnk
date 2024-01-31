@@ -25,17 +25,17 @@ This is a V port of Nuklear sdl_opengl3 demo
 
 How to test `vnk` on linux : (prerequisite : v is already installed and in the PATH)
 ```
-$ mkdir -p ~/.vmodules/nsauzede
-$ cd ~/.vmodules/nsauzede
-$ git clone https://github.com/nsauzede/vnk.git
-$ cd vnk
+$ v install nsauzede.vsdl2
+$ v install nsauzede.vnk
+$ cd ~/.vmodules/nsauzede/vnk
+$ make
 $ v run examples/mainnk_v/mainnk_v.v
 ```
 
 There is also a hot-reload mode (-live) :
 ```
 $ cd ~/.vmodules/nsauzede/vnk
-$ v run -live examples/mainnk_v/mainnk_v.v
+$ v -live run examples/mainnk_v/mainnk_v.v
 ```
 In hot-reload mode, once the vnk demo windows is shown, try to modify the `live_main` function (tagged with `[live]`)
 to see the "live" changes appearing a few instants after saving the source file.
