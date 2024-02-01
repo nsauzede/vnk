@@ -46,7 +46,7 @@ const (
 	os_maxpath  = os.max_path_len
 )
 
-[live]
+@[live]
 fn (mut s AppState) live_main() {
 	if !s.hide_window {
 		flags := 0 | C.NK_WINDOW_MOVABLE | C.NK_WINDOW_SCALABLE | C.NK_WINDOW_MINIMIZABLE | C.NK_WINDOW_TITLE
@@ -175,7 +175,6 @@ fn main() {
 		s.live_main()
 	}
 
-	cleanup:
 	C.nk_sdl_shutdown()
 	C.SDL_GL_DeleteContext(gl_context)
 	C.SDL_DestroyWindow(s.win)

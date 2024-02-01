@@ -61,7 +61,7 @@ mut:
 	map         [][]rune
 }
 
-[live]
+@[live]
 fn (mut s State) live_main() {
 	mut stored := 0
 	mut crates := 0
@@ -93,8 +93,8 @@ fn (mut s State) live_main() {
 				s.w++
 			}
 			s.h++
-			// we must convert ar : array of rune to array of byte for nk_label
-			mut ab := []byte{}
+			// we must convert ar : array of rune to array of u8 for nk_label
+			mut ab := []u8{}
 			for b in ar {
 				ab << b
 			}

@@ -75,7 +75,7 @@ mut:
 	map         [][]rune
 }
 
-[live]
+@[live]
 fn (mut s State) live_main() {
 	mut stored := 0
 	mut crates := 0

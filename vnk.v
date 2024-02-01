@@ -36,10 +36,10 @@ pub mut:
 // pub type nk_colorf C.nk_colorf
 pub struct C.nk_color {
 pub mut:
-	r byte
-	g byte
-	b byte
-	a byte
+	r u8
+	g u8
+	b u8
+	a u8
 }
 
 pub struct C.nk_vec2 {
@@ -78,17 +78,17 @@ fn C.nk_rgb_cf(c C.nk_colorf) C.nk_color
 fn C.nk_widget_width(ctx voidptr) f32
 fn C.nk_combo_begin_color(ctx voidptr, color C.nk_color, size C.nk_vec2) int
 fn C.nk_color_picker(ctx voidptr, colorf C.nk_colorf, cfmt int) C.nk_colorf
-fn C.nk_propertyf(ctx voidptr, name &byte, min f32, val f32, max f32, step f32, inc_per_pixel f32) f32
+fn C.nk_propertyf(ctx voidptr, name &u8, min f32, val f32, max f32, step f32, inc_per_pixel f32) f32
 fn C.nk_combo_end(ctx voidptr)
 fn C.nk_rect(x f32, y f32, w f32, h f32) C.nk_rect
-fn C.nk_begin(ctx voidptr, title &byte, bounds C.nk_rect, flags int) int
+fn C.nk_begin(ctx voidptr, title &u8, bounds C.nk_rect, flags int) int
 fn C.nk_layout_row_static(ctx voidptr, height f32, item_width int, cols int)
-fn C.nk_button_label(ctx voidptr, title &byte) int
+fn C.nk_button_label(ctx voidptr, title &u8) int
 fn C.nk_layout_row_dynamic(ctx voidptr, height f32, cols int)
-fn C.nk_option_label(ctx voidptr, title &byte, active int) int
-fn C.nk_property_int(ctx voidptr, name &byte, min int, val voidptr, max int, step int, inc_per_pixel f32)
-fn C.nk_label(ctx voidptr, title &byte, align int)
-fn C.nk_text(ctx voidptr, title &byte, flags int)
+fn C.nk_option_label(ctx voidptr, title &u8, active int) int
+fn C.nk_property_int(ctx voidptr, name &u8, min int, val voidptr, max int, step int, inc_per_pixel f32)
+fn C.nk_label(ctx voidptr, title &u8, align int)
+fn C.nk_text(ctx voidptr, title &u8, flags int)
 fn C.nk_end(ctx voidptr)
 fn C.nk_sdl_render(nk_anti_aliasing int, max_vertex_buffer int, max_element_buffer int)
 fn C.nk_sdl_init(win voidptr) voidptr
